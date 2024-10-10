@@ -3,6 +3,8 @@ extern crate rocket;
 
 use api::cors::CORS;
 use api::post_handler;
+use api::authors_handler;
+use api::general_handler;
 
 #[launch]
 fn rocket() -> _ {
@@ -15,6 +17,12 @@ fn rocket() -> _ {
             post_handler::publish_post_handler,
             post_handler::update_post_handler,
             post_handler::delete_post_handler,
-            post_handler::all_options_handler,
+            general_handler::all_options_handler,
+            authors_handler::list_authors_handler,
+            authors_handler::list_author_handler,
+            authors_handler::create_author_handler,
+            authors_handler::update_author_handler,
+            authors_handler::delete_author_handler,
         ])
+        .register("/", catchers![rocket_validation::validation_catcher])
 }

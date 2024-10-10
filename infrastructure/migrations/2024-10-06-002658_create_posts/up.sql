@@ -1,7 +1,7 @@
 CREATE TABLE posts (
   id SERIAL PRIMARY KEY,
-  title VARCHAR NOT NULL,
+  title VARCHAR(255) NOT NULL,
   body TEXT NOT NULL,
-  genre VARCHAR NOT NULL,
+  genre VARCHAR(255) NOT NULL,
   published BOOLEAN NOT NULL DEFAULT false
 )

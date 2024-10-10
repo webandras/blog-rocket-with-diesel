@@ -10,7 +10,12 @@ pub fn update_post(post_id: i32, post: Json<NewPost>) -> Result<Post, NotFound<S
     use domain::schema::posts::dsl::*;
 
     match diesel::update(posts.find(post_id)).set(
-        (title.eq(&post.title), body.eq(&post.body), genre.eq(&post.genre), published.eq(&post.published))
+        (
+            title.eq(&post.title),
+            body.eq(&post.body),
+            genre.eq(&post.genre),
+            published.eq(&post.published)
+        )
     ).get_result::<Post>(&mut establish_connection()) {
         Ok(post) => Ok(post),
         Err(err) => match err {

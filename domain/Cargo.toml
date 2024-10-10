@@ -6,6 +6,9 @@ edition = "2021"
 [dependencies]
 rocket = { version = "0.5.1", features = ["json"] }
 diesel = { version = "2.2.4", features = ["postgres", "chrono"] }
-serde = { version = "1.0.210", features = ["derive"] }
+serde = { version = "1.0.210", features = ["derive" ] }
 chrono = { version = "0.4.38", features = ["serde"] }
+validator = { version = "0.16", features = ["derive"] }
 serde_derive = "1.0.210"
+serde_valid = "0.25.0"
+rocket-validation = "0.2.0"

@@ -1,7 +1,7 @@
 use shared::response_models::{Response, ResponseBody};
 use application::post::{create, read, publish, delete, update};
 use domain::models::{Post, NewPost};
-use rocket::{delete, get, options, post, put};
+use rocket::{delete, get, post, put};
 use rocket::response::status::{NotFound, Created};
 use rocket::serde::json::Json;
 
@@ -48,10 +48,4 @@ pub fn delete_post_handler(post_id: i32) -> Result<String, NotFound<String>> {
     let response = Response { body: ResponseBody::Posts(posts) };
 
     Ok(serde_json::to_string(&response).unwrap())
-}
-
-/// Catches all OPTION requests in order to get the CORS related Fairing triggered.
-#[options("/<_..>")]
-pub fn all_options_handler() {
-    /* Intentionally left empty */
 }
