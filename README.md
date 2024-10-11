@@ -10,11 +10,37 @@ It uses the "Rocket" Rust framework with Diesel ORM, and PostgreSQL database.
    example: `C:\Program Files\PostgreSQL\17\lib`.
 3. Set the `DATABASE_URL` in the **.env** file (_see example_)
 
-```cargo build```
+4. Install Diesel CLI
 
-Build and run:
+```shell
+cargo install diesel_cli --no-default-features --features postgres`
+```
 
-```cargo run```
+5. Configure Diesel
+
+- cd to infrastructure
+- generate `diesel.toml` file:
+
+```shell
+diesel setup
+```
+6. Run all SQL migrations (it also generates the `schema.rs` file):
+
+```shell
+diesel migration run
+```
+
+7. Copy `schema.rs` from `infrastructure/src` to `domain\src`.
+8. Update `schema.rs` file path in `diesel.toml` configuration file to the new location
+
+9. Build and run project (from the root of the project, not from inside the `infrastructure` folder!):
+
+```shell
+cargo run
+```
+
+9. The API is accessible at http://127.0.0.1:8000.
+
 
 ## 2. Endpoints information
 
