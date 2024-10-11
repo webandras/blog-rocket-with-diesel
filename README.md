@@ -13,7 +13,7 @@ It uses the "Rocket" Rust framework with Diesel ORM, and PostgreSQL database.
 4. Install Diesel CLI
 
 ```shell
-cargo install diesel_cli --no-default-features --features postgres`
+cargo install diesel_cli --no-default-features --features postgres
 ```
 
 5. Configure Diesel
