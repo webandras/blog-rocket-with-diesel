@@ -18,7 +18,7 @@ pub struct Post {
     pub author_id: Option<i32>,
 }
 
-#[derive(Insertable, Deserialize)]
+#[derive(Insertable, Deserialize, Validate)]
 #[serde(crate = "rocket::serde")]
 #[diesel(table_name = posts)]
 pub struct NewPost {
