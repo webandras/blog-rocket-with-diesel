@@ -1,8 +1,9 @@
-use domain::models::Post;
+use domain::models::{Author, Post, PostWithAuthor};
 use shared::response_models::{Response, ResponseBody};
 use infrastructure::establish_connection;
 use diesel::prelude::*;
 use rocket::response::status::NotFound;
+use domain::schema::authors;
 
 pub fn list_post(post_id: i32) -> Result<Post, NotFound<String>> {
     use domain::schema::posts;
@@ -21,11 +22,15 @@ pub fn list_post(post_id: i32) -> Result<Post, NotFound<String>> {
     }
 }
 
-pub fn list_posts() -> Vec<Post> {
+pub fn list_posts() -> Vec<PostWithAuthor> {
     use domain::schema::posts;
 
-    match posts::table.select(posts::all_columns).load::<Post>(&mut establish_connection()) {
-        Ok(mut posts) => {
+    match posts::table
+        .left_join(authors::table)
+        .select((Post::as_select(), Option::<Author>::as_select()))
+        .load::<(Post, Option<Author>)>(&mut establish_connection()) {
+        Ok(mut tuples) => {
+            let mut posts: Vec<PostWithAuthor> = tuples.into_iter().map(|(post, author)| PostWithAuthor { post, author }).collect();
             posts.sort();
             posts
         }

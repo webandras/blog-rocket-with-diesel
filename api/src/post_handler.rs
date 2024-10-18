@@ -1,14 +1,14 @@
 use shared::response_models::{Response, ResponseBody};
 use application::post::{create, read, publish, delete, update};
-use domain::models::{Post, NewPost};
+use domain::models::{Post, NewPost, PostWithAuthor};
 use rocket::{delete, get, post, put};
 use rocket::response::status::{NotFound, Created};
 use rocket::serde::json::Json;
 
 #[get("/posts")]
 pub fn list_posts_handler() -> String {
-    let posts: Vec<Post> = read::list_posts();
-    let response = Response { body: ResponseBody::Posts(posts) };
+    let posts: Vec<PostWithAuthor> = read::list_posts();
+    let response = Response { body: ResponseBody::PostsWithAuthors(posts) };
 
     serde_json::to_string(&response).unwrap()
 }

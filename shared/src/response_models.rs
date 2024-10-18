@@ -1,4 +1,4 @@
-use domain::models::Post;
+use domain::models::{Post, PostWithAuthor};
 use domain::models::Author;
 use rocket::serde::Serialize;
 
@@ -6,6 +6,8 @@ use rocket::serde::Serialize;
 pub enum ResponseBody {
     Message(String),
     Post(Post),
+    PostWithAuthor(PostWithAuthor),
+    PostsWithAuthors(Vec<PostWithAuthor>),
     Posts(Vec<Post>),
     Author(Author),
     Authors(Vec<Author>),

@@ -14,7 +14,8 @@ pub fn update_post(post_id: i32, post: Json<NewPost>) -> Result<Post, NotFound<S
             title.eq(&post.title),
             body.eq(&post.body),
             genre.eq(&post.genre),
-            published.eq(&post.published)
+            published.eq(&post.published),
+            author_id.eq(&post.author_id.unwrap_or_default())
         )
     ).get_result::<Post>(&mut establish_connection()) {
         Ok(post) => Ok(post),
