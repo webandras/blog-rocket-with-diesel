@@ -1,11 +1,11 @@
-use domain::models::{Author, NewAuthor};
+use domain::models::{Author, CreateAuthor};
 use shared::response_models::{Response, ResponseBody};
 use infrastructure::establish_connection;
 use diesel::prelude::*;
 use rocket::response::status::Created;
 use rocket::serde::json::Json;
 
-pub fn create_author(author: Json<NewAuthor>) -> Created<String> {
+pub fn create_author(author: Json<CreateAuthor>) -> Created<String> {
     use domain::schema::authors;
 
     let author = author.into_inner();

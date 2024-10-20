@@ -59,6 +59,7 @@ name = "application"
 version = "0.1.0"
 dependencies = [
  "diesel",
+ "diesel_derives",
  "domain",
  "infrastructure",
  "rocket",
@@ -342,6 +343,7 @@ version = "0.1.0"
 dependencies = [
  "chrono",
  "diesel",
+ "diesel_derives",
  "rocket",
  "rocket-validation",
  "serde",

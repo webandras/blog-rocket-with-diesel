@@ -1,15 +1,27 @@
-use domain::models::{Post, PostWithAuthor};
+use domain::models::{Post, PostWithRelations};
 use domain::models::Author;
 use rocket::serde::Serialize;
 
 #[derive(Serialize)]
 pub enum ResponseBody {
     Message(String),
+
+    #[serde(rename(serialize = "post"))]
     Post(Post),
-    PostWithAuthor(PostWithAuthor),
-    PostsWithAuthors(Vec<PostWithAuthor>),
+
+    #[serde(rename(serialize = "post"))]
+    PostWithRelations(PostWithRelations),
+
+    #[serde(rename(serialize = "posts"))]
+    PostsWithRelations(Vec<PostWithRelations>),
+
+    #[serde(rename(serialize = "posts"))]
     Posts(Vec<Post>),
+
+    #[serde(rename(serialize = "author"))]
     Author(Author),
+
+    #[serde(rename(serialize = "authors"))]
     Authors(Vec<Author>),
 }
 

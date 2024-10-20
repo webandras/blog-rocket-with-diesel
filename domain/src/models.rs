@@ -7,25 +7,71 @@ use rocket_validation::{Validate};
 use std::convert::From;
 
 // Queryable will generate the code needed to load the struct from an SQL statement
-#[derive(Selectable, Queryable, Deserialize, Serialize, Ord, Eq, PartialEq, PartialOrd, AsChangeset)]
+#[derive(
+    Insertable, Selectable, Queryable, Identifiable,
+    Deserialize, Serialize,
+    Ord, Eq, PartialEq, PartialOrd,
+    AsChangeset,
+    Validate
+)]
+#[serde(crate = "rocket::serde")]
+#[diesel(table_name = authors)]
+#[diesel(primary_key(id))]
+pub struct Author {
+    #[serde(skip_deserializing)]
+    pub id: i32,
+    #[validate(length(min = 2, max = 120))]
+    pub firstname: String,
+    #[validate(length(min = 2, max = 120))]
+    pub lastname: String,
+    #[validate(email)]
+    pub email: String,
+    pub is_active: bool,
+}
+
+#[derive(Insertable, Deserialize, Serialize)]
+#[derive(Queryable)]
+#[derive(Validate)]
+#[serde(crate = "rocket::serde")]
+#[diesel(table_name = authors)]
+pub struct CreateAuthor {
+    #[validate(length(min = 2, max = 120))]
+    pub firstname: String,
+    #[validate(length(min = 2, max = 120))]
+    pub lastname: String,
+    #[validate(email)]
+    pub email: String,
+    pub is_active: bool,
+}
+
+#[derive(Selectable, Deserialize, Serialize)]
+#[derive(Queryable, Identifiable, Associations)]
+#[derive(Ord, Eq, PartialEq, PartialOrd, AsChangeset, Validate)]
+#[serde(crate = "rocket::serde")]
 #[diesel(belongs_to(Author))]
+#[diesel(table_name = posts)]
+#[diesel(primary_key(id))]
 pub struct Post {
+    #[serde(skip_deserializing)]
     pub id: i32,
     pub title: String,
     pub body: String,
     pub genre: String,
     pub published: bool,
-    #[serde(skip)]
+    #[serde(skip_deserializing)]
     pub created_at: chrono::NaiveDateTime,
+    #[serde(skip_deserializing)]
     pub updated_at: chrono::NaiveDateTime,
+    #[serde(skip_serializing)]
     pub author_id: Option<i32>,
 }
 
-#[derive(Insertable, Deserialize, Validate)]
-#[serde(crate = "rocket::serde")]
-#[diesel(belongs_to(Author))]
+
+#[derive(Insertable, Deserialize, Serialize)]
+#[derive(Queryable)]
+#[derive(Validate)]
 #[diesel(table_name = posts)]
-pub struct NewPost {
+pub struct CreatePost {
     #[validate(length(min = 3, max = 255))]
     pub title: String,
     pub body: String,
@@ -37,33 +83,8 @@ pub struct NewPost {
     pub author_id: Option<i32>,
 }
 
-#[derive(Selectable, Queryable, Deserialize, Serialize, Ord, Eq, PartialEq, PartialOrd, AsChangeset, Validate)]
-pub struct Author {
-    pub id: i32,
-    #[validate(length(min = 2, max = 120))]
-    pub firstname: String,
-    #[validate(length(min = 2, max = 120))]
-    pub lastname: String,
-    #[validate(email)]
-    pub email: String,
-    pub is_active: bool,
-}
-
-#[derive(Insertable, Deserialize, Validate)]
-#[serde(crate = "rocket::serde")]
-#[diesel(table_name = authors)]
-pub struct NewAuthor {
-    #[validate(length(min = 2, max = 255))]
-    pub firstname: String,
-    #[validate(length(min = 2, max = 120))]
-    pub lastname: String,
-    #[validate(email)]
-    pub email: String,
-    pub is_active: bool,
-}
-
 #[derive(Queryable, Deserialize, Serialize, Ord, Eq, PartialEq, PartialOrd)]
-pub struct PostWithAuthor {
+pub struct PostWithRelations {
     #[serde(flatten)]
     pub post: Post,
     pub author: Option<Author>,

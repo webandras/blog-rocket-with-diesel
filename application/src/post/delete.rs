@@ -2,9 +2,10 @@ use shared::response_models::{Response, ResponseBody};
 use infrastructure::establish_connection;
 use diesel::prelude::*;
 use rocket::response::status::NotFound;
-use domain::models::Post;
+use domain::models::{Author, Post, PostWithRelations};
+use domain::schema::authors;
 
-pub fn delete_post(post_id: i32) -> Result<Vec<Post>, NotFound<String>> {
+pub fn delete_post(post_id: i32) -> Result<Vec<PostWithRelations>, NotFound<String>> {
     use domain::schema::posts::dsl::*;
     use domain::schema::posts;
 
@@ -24,10 +25,18 @@ pub fn delete_post(post_id: i32) -> Result<Vec<Post>, NotFound<String>> {
     };
 
     if num_deleted > 0 {
-        match posts::table.select(posts::all_columns).load::<Post>(&mut establish_connection()) {
-            Ok(mut posts_) => {
-                posts_.sort();
-                Ok(posts_)
+        match posts::table
+            .left_join(authors::table)
+            .select((Post::as_select(), Option::<Author>::as_select()))
+            .load::<(Post, Option<Author>)>(&mut establish_connection()) {
+            Ok(result) => {
+                let mut _posts: Vec<PostWithRelations> = result
+                    .into_iter()
+                    .map(|(post, author)| PostWithRelations { post, author })
+                    .collect();
+
+                _posts.sort();
+                Ok(_posts)
             }
             Err(err) => match err {
                 _ => {

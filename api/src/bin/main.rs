@@ -23,6 +23,8 @@ fn rocket() -> _ {
             authors_handler::create_author_handler,
             authors_handler::update_author_handler,
             authors_handler::delete_author_handler,
+            authors_handler::list_author_posts_handler
         ])
         .register("/", catchers![rocket_validation::validation_catcher])
+
 }

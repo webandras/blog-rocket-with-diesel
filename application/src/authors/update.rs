@@ -2,11 +2,11 @@ use diesel::{QueryDsl, RunQueryDsl};
 use diesel::expression_methods::ExpressionMethods;
 use rocket::response::status::NotFound;
 use rocket::serde::json::Json;
-use domain::models::{NewAuthor, Author};
+use domain::models::{Author};
 use infrastructure::establish_connection;
 use shared::response_models::{Response, ResponseBody};
 
-pub fn update_author(author_id: i32, author: Json<NewAuthor>) -> Result<Author, NotFound<String>> {
+pub fn update_author(author_id: i32, author: Json<Author>) -> Result<Author, NotFound<String>> {
     use domain::schema::authors::dsl::*;
 
     match diesel::update(authors.find(author_id)).set(
