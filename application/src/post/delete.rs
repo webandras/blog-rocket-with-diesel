@@ -1,17 +1,20 @@
 use shared::response_models::{Response, ResponseBody};
-use infrastructure::establish_connection;
 use diesel::prelude::*;
+use diesel::r2d2::{ConnectionManager, PooledConnection};
 use rocket::response::status::NotFound;
+use rocket::State;
 use domain::models::{Author, Post, PostWithRelations};
 use domain::schema::authors;
+use infrastructure::db_pool::ServerState;
 
-pub fn delete_post(post_id: i32) -> Result<Vec<PostWithRelations>, NotFound<String>> {
+pub fn delete_post(state: &State<ServerState>, post_id: i32) -> Result<Vec<PostWithRelations>, NotFound<String>> {
     use domain::schema::posts::dsl::*;
     use domain::schema::posts;
 
+    let mut conn: PooledConnection<ConnectionManager<PgConnection>> = state.db_pool.get().expect("Could not connect to DB");
     let response: Response;
 
-    let num_deleted = match diesel::delete(posts.filter(id.eq(post_id))).execute(&mut establish_connection()) {
+    let num_deleted = match diesel::delete(posts.filter(id.eq(post_id))).execute(&mut conn) {
         Ok(count) => count,
         Err(err) => match err {
             diesel::result::Error::NotFound => {
@@ -28,7 +31,7 @@ pub fn delete_post(post_id: i32) -> Result<Vec<PostWithRelations>, NotFound<Stri
         match posts::table
             .left_join(authors::table)
             .select((Post::as_select(), Option::<Author>::as_select()))
-            .load::<(Post, Option<Author>)>(&mut establish_connection()) {
+            .load::<(Post, Option<Author>)>(&mut conn) {
             Ok(result) => {
                 let mut _posts: Vec<PostWithRelations> = result
                     .into_iter()

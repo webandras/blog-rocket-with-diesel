@@ -10,3 +10,5 @@ pub fn establish_connection() -> PgConnection {
 
     PgConnection::establish(&database_url).unwrap_or_else(|_| panic!("Error connecting to {}", database_url))
 }
+
+pub mod db_pool;

@@ -1,18 +1,22 @@
 use domain::models::{Author, Post, PostWithRelations};
 use shared::response_models::{Response, ResponseBody};
-use infrastructure::establish_connection;
 use diesel::prelude::*;
+use diesel::r2d2::{ConnectionManager, PooledConnection};
 use rocket::response::status::NotFound;
+use rocket::State;
 use domain::schema::authors;
+use infrastructure::db_pool::ServerState;
 
-pub fn list_post(post_id: i32) -> Result<PostWithRelations, NotFound<String>> {
+pub fn list_post(state: &State<ServerState>, post_id: i32) -> Result<PostWithRelations, NotFound<String>> {
     use domain::schema::posts;
+
+    let mut conn: PooledConnection<ConnectionManager<PgConnection>> = state.db_pool.get().expect("Could not connect to DB");
 
     match posts::table
         .left_join(authors::table)
         .select((Post::as_select(), Option::<Author>::as_select()))
         .filter(posts::id.eq(post_id))
-        .first::<(Post, Option<Author>)>(&mut establish_connection()) {
+        .first::<(Post, Option<Author>)>(&mut conn) {
         Ok(tuple) => {
             let post = PostWithRelations {
                 post: tuple.0,
@@ -33,13 +37,15 @@ pub fn list_post(post_id: i32) -> Result<PostWithRelations, NotFound<String>> {
     }
 }
 
-pub fn list_posts() -> Vec<PostWithRelations> {
+pub fn list_posts(state: &State<ServerState>) -> Vec<PostWithRelations> {
     use domain::schema::posts;
+
+    let mut conn: PooledConnection<ConnectionManager<PgConnection>> = state.db_pool.get().expect("Could not connect to DB");
 
     match posts::table
         .left_join(authors::table)
         .select((Post::as_select(), Option::<Author>::as_select()))
-        .load::<(Post, Option<Author>)>(&mut establish_connection()) {
+        .load::<(Post, Option<Author>)>(&mut conn) {
         Ok(result) => {
             let mut posts: Vec<PostWithRelations> = result
                 .into_iter()

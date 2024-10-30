@@ -5,9 +5,12 @@ use api::cors::CORS;
 use api::post_handler;
 use api::authors_handler;
 use api::general_handler;
+use infrastructure::db_pool::*;
 
 #[launch]
 fn rocket() -> _ {
+    let db_pool: DbPool = get_connection_pool();
+
     rocket::build()
         .attach(CORS)
         .mount("/api", routes![
@@ -25,6 +28,7 @@ fn rocket() -> _ {
             authors_handler::delete_author_handler,
             authors_handler::list_author_posts_handler
         ])
+        .manage(ServerState { db_pool })
         .register("/", catchers![rocket_validation::validation_catcher])
 
 }

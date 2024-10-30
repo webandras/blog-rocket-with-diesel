@@ -7,23 +7,22 @@ use rocket_validation::{Validate};
 use std::convert::From;
 
 // Queryable will generate the code needed to load the struct from an SQL statement
-#[derive(
-    Insertable, Selectable, Queryable, Identifiable,
-    Deserialize, Serialize,
-    Ord, Eq, PartialEq, PartialOrd,
-    AsChangeset,
-    Validate
-)]
+#[derive(Insertable, Deserialize, Serialize)]
+#[derive(Selectable, Queryable, Identifiable)]
+#[derive(Ord, Eq, PartialEq, PartialOrd, AsChangeset, Validate)]
 #[serde(crate = "rocket::serde")]
 #[diesel(table_name = authors)]
 #[diesel(primary_key(id))]
 pub struct Author {
     #[serde(skip_deserializing)]
     pub id: i32,
+
     #[validate(length(min = 2, max = 120))]
     pub firstname: String,
+
     #[validate(length(min = 2, max = 120))]
     pub lastname: String,
+
     #[validate(email)]
     pub email: String,
     pub is_active: bool,
@@ -37,8 +36,10 @@ pub struct Author {
 pub struct CreateAuthor {
     #[validate(length(min = 2, max = 120))]
     pub firstname: String,
+
     #[validate(length(min = 2, max = 120))]
     pub lastname: String,
+
     #[validate(email)]
     pub email: String,
     pub is_active: bool,
@@ -58,10 +59,13 @@ pub struct Post {
     pub body: String,
     pub genre: String,
     pub published: bool,
+
     #[serde(skip_deserializing)]
     pub created_at: chrono::NaiveDateTime,
+
     #[serde(skip_deserializing)]
     pub updated_at: chrono::NaiveDateTime,
+
     #[serde(skip_serializing)]
     pub author_id: Option<i32>,
 }
@@ -75,6 +79,7 @@ pub struct CreatePost {
     #[validate(length(min = 3, max = 255))]
     pub title: String,
     pub body: String,
+
     #[validate(length(min = 3, max = 255))]
     pub genre: String,
     pub published: bool,
@@ -83,7 +88,9 @@ pub struct CreatePost {
     pub author_id: Option<i32>,
 }
 
-#[derive(Queryable, Deserialize, Serialize, Ord, Eq, PartialEq, PartialOrd)]
+
+#[derive(Queryable, Deserialize, Serialize)]
+#[derive(Ord, Eq, PartialEq, PartialOrd)]
 pub struct PostWithRelations {
     #[serde(flatten)]
     pub post: Post,

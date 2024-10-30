@@ -1,18 +1,22 @@
 use domain::models::{Post, PostWithRelations};
 use shared::response_models::{Response, ResponseBody};
-use infrastructure::establish_connection;
 use rocket::response::status::NotFound;
 use diesel::prelude::*;
+use diesel::r2d2::{ConnectionManager, PooledConnection};
+use rocket::State;
+use infrastructure::db_pool::ServerState;
 use crate::post;
 
-pub fn publish_post(post_id: i32) -> Result<PostWithRelations, NotFound<String>> {
+pub fn publish_post(state: &State<ServerState>, post_id: i32) -> Result<PostWithRelations, NotFound<String>> {
     use domain::schema::posts::dsl::*;
+
+    let mut conn: PooledConnection<ConnectionManager<PgConnection>> = state.db_pool.get().expect("Could not connect to DB");
 
     match diesel::update(posts.find(post_id)).set(
         published.eq(true)
-    ).get_result::<Post>(&mut establish_connection()) {
+    ).get_result::<Post>(&mut conn) {
         Ok(post) => {
-            let post: PostWithRelations = post::read::list_post(post.id)?;
+            let post: PostWithRelations = post::read::list_post(&state, post.id)?;
             Ok(post)
         },
         Err(err) => match err {
