@@ -6,3 +6,4 @@ members = [
     "application",
     "shared",
 ]
+resolver = "2"

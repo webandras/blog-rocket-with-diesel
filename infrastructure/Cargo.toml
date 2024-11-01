@@ -5,4 +5,5 @@ edition = "2021"
 
 [dependencies]
 diesel = { version = "2.2.4", features = ["postgres", "chrono", "r2d2"] }
+diesel_migrations = "2.2.0"
 dotenvy = "0.15"
