@@ -1,11 +1,10 @@
 use std::env;
+use core::time::Duration;
 use diesel::PgConnection;
 use diesel::r2d2::{ConnectionManager, Pool};
 use dotenvy::dotenv;
 
-
 pub type DbPool = Pool<ConnectionManager<PgConnection>>;
-
 
 pub struct ServerState {
     pub db_pool: DbPool
@@ -21,6 +20,7 @@ pub fn get_connection_pool() -> Pool<ConnectionManager<PgConnection>> {
     Pool::builder()
         .test_on_check_out(true)
         .max_size(10)
+        .connection_timeout(Duration::new(30, 0))
         .build(manager)
         .expect("Could not build connection pool")
 }
