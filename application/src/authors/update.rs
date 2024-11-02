@@ -24,7 +24,7 @@ pub fn update_author(state: &State<ServerState>, author_id: i32, author: Json<Au
         Ok(author) => Ok(author),
         Err(err) => match err {
             diesel::result::Error::NotFound => {
-                let response = Response { body: ResponseBody::Message(format!("Error updating author with id {} - {}", author_id, err)) };
+                let response = Response { data: ResponseBody::Error(format!("Error updating author with id {} - {}", author_id, err)) };
                 return Err(NotFound(serde_json::to_string(&response).unwrap()));
             }
             _ => {

@@ -4,7 +4,10 @@ use rocket::serde::Serialize;
 
 #[derive(Serialize)]
 pub enum ResponseBody {
+    #[serde(rename(serialize = "message"))]
     Message(String),
+
+    #[serde(rename(serialize = "error"))]
     Error(String),
 
     #[serde(rename(serialize = "post"))]
@@ -28,13 +31,17 @@ pub enum ResponseBody {
 
 #[derive(Serialize)]
 pub enum ErrorResponseBody {
+    #[serde(rename(serialize = "message"))]
     Message(String),
+
+    #[serde(rename(serialize = "error"))]
+    Error(String),
 }
 
 #[derive(Serialize)]
 #[serde(crate = "rocket::serde")]
 pub struct Response {
-    pub body: ResponseBody,
+    pub data: ResponseBody,
 }
 
 #[derive(Serialize)]

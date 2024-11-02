@@ -21,7 +21,7 @@ pub fn publish_post(state: &State<ServerState>, post_id: i32) -> Result<PostWith
         },
         Err(err) => match err {
             diesel::result::Error::NotFound => {
-                let response = Response { body: ResponseBody::Message(format!("Error publishing post with id {} - {}", post_id, err)) };
+                let response = Response { data: ResponseBody::Error(format!("Error publishing post with id {} - {}", post_id, err)) };
                 return Err(NotFound(serde_json::to_string(&response).unwrap()));
             }
             _ => {

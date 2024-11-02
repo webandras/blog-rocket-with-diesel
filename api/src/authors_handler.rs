@@ -10,7 +10,7 @@ use infrastructure::db_pool::ServerState;
 #[get("/authors")]
 pub fn list_authors_handler(state: &State<ServerState>) -> String {
     let authors: Vec<Author> = read::list_authors(&state);
-    let response = Response { body: ResponseBody::Authors(authors) };
+    let response = Response { data: ResponseBody::Authors(authors) };
 
     serde_json::to_string(&response).unwrap()
 }
@@ -18,7 +18,7 @@ pub fn list_authors_handler(state: &State<ServerState>) -> String {
 #[get("/authors/<author_id>")]
 pub fn list_author_handler(state: &State<ServerState>, author_id: i32) -> Result<String, NotFound<String>> {
     let author = read::list_author(&state, author_id)?;
-    let response = Response { body: ResponseBody::Author(author) };
+    let response = Response { data: ResponseBody::Author(author) };
 
     Ok(serde_json::to_string(&response).unwrap())
 }
@@ -26,7 +26,7 @@ pub fn list_author_handler(state: &State<ServerState>, author_id: i32) -> Result
 #[get("/authors/<author_id>/posts")]
 pub fn list_author_posts_handler(state: &State<ServerState>, author_id: i32) -> Result<String, NotFound<String>> {
     let posts = read::list_author_posts(&state, author_id)?;
-    let response = Response { body: ResponseBody::Posts(posts) };
+    let response = Response { data: ResponseBody::Posts(posts) };
 
     Ok(serde_json::to_string(&response).unwrap())
 }
@@ -40,7 +40,7 @@ pub fn create_author_handler(state: &State<ServerState>, author: Validated<Json<
 #[put("/authors/<author_id>", format = "application/json", data = "<author>")]
 pub fn update_author_handler(state: &State<ServerState>, author_id: i32, author: Json<Author>) -> Result<String, NotFound<String>> {
     let author = update::update_author(&state, author_id, author)?;
-    let response = Response { body: ResponseBody::Author(author) };
+    let response = Response { data: ResponseBody::Author(author) };
 
     Ok(serde_json::to_string(&response).unwrap())
 }
@@ -48,7 +48,7 @@ pub fn update_author_handler(state: &State<ServerState>, author_id: i32, author:
 #[delete("/authors/<author_id>")]
 pub fn delete_author_handler(state: &State<ServerState>, author_id: i32) -> Result<String, NotFound<String>> {
     let authors = delete::delete_author(&state, author_id)?;
-    let response = Response { body: ResponseBody::Authors(authors) };
+    let response = Response { data: ResponseBody::Authors(authors) };
 
     Ok(serde_json::to_string(&response).unwrap())
 }

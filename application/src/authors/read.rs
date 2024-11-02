@@ -15,7 +15,7 @@ pub fn list_author(state: &State<ServerState>, author_id: i32) -> Result<Author,
         Ok(author) => Ok(author),
         Err(err) => match err {
             diesel::result::Error::NotFound => {
-                let response = Response { body: ResponseBody::Message(format!("Error selecting author with id {} - {}", author_id, err)) };
+                let response = Response { data: ResponseBody::Error(format!("Error selecting author with id {} - {}", author_id, err)) };
                 return Err(NotFound(serde_json::to_string(&response).unwrap()));
             }
             _ => {
@@ -37,7 +37,7 @@ pub fn list_author_posts(state: &State<ServerState>, author_id: i32) -> Result<V
         Ok(author) => Ok(author),
         Err(err) => match err {
             diesel::result::Error::NotFound => {
-                let response = Response { body: ResponseBody::Message(format!("Error selecting author with id {} - {}", author_id, err)) };
+                let response = Response { data: ResponseBody::Error(format!("Error selecting author with id {} - {}", author_id, err)) };
                 return Err(NotFound(serde_json::to_string(&response).unwrap()));
             }
             _ => {
@@ -50,7 +50,7 @@ pub fn list_author_posts(state: &State<ServerState>, author_id: i32) -> Result<V
         Ok(author_post) => Ok(author_post),
         Err(err) => match err {
             diesel::result::Error::NotFound => {
-                let response = Response { body: ResponseBody::Message(format!("Error selecting author with id {} - {}", author_id, err)) };
+                let response = Response { data: ResponseBody::Error(format!("Error selecting author with id {} - {}", author_id, err)) };
                 return Err(NotFound(serde_json::to_string(&response).unwrap()));
             }
             _ => {

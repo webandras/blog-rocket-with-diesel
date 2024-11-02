@@ -18,7 +18,7 @@ pub fn delete_post(state: &State<ServerState>, post_id: i32) -> Result<Vec<PostW
         Ok(count) => count,
         Err(err) => match err {
             diesel::result::Error::NotFound => {
-                let response = Response { body: ResponseBody::Message(format!("Error deleting post with id {} - {}", post_id, err)) };
+                let response = Response { data: ResponseBody::Error(format!("Error deleting post with id {} - {}", post_id, err)) };
                 return Err(NotFound(serde_json::to_string(&response).unwrap()));
             }
             _ => {
@@ -48,7 +48,7 @@ pub fn delete_post(state: &State<ServerState>, post_id: i32) -> Result<Vec<PostW
             }
         }
     } else {
-        response = Response { body: ResponseBody::Message(format!("Error - no post with id {}", post_id)) };
+        response = Response { data: ResponseBody::Error(format!("Error - no post with id {}", post_id)) };
         Err(NotFound(serde_json::to_string(&response).unwrap()))
     }
 }

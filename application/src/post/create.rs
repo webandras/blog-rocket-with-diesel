@@ -18,7 +18,7 @@ pub fn create_post(state: &State<ServerState>, post: Json<CreatePost>) -> Create
     match diesel::insert_into(posts::table).values(&post).get_result::<Post>(&mut conn) {
         Ok(post) => {
             let post: PostWithRelations = post::read::list_post(&state, post.id).unwrap();
-            let response = Response { body: ResponseBody::PostWithRelations(post) };
+            let response = Response { data: ResponseBody::PostWithRelations(post) };
 
             Created::new("").tagged_body(serde_json::to_string(&response).unwrap())
         }

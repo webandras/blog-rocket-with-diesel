@@ -17,7 +17,7 @@ pub fn delete_author(state: &State<ServerState>, author_id: i32) -> Result<Vec<A
         Ok(count) => count,
         Err(err) => match err {
             diesel::result::Error::NotFound => {
-                let response = Response { body: ResponseBody::Message(format!("Error deleting author with id {} - {}", author_id, err)) };
+                let response = Response { data: ResponseBody::Error(format!("Error deleting author with id {} - {}", author_id, err)) };
                 return Err(NotFound(serde_json::to_string(&response).unwrap()));
             }
             _ => {
@@ -39,7 +39,7 @@ pub fn delete_author(state: &State<ServerState>, author_id: i32) -> Result<Vec<A
             }
         }
     } else {
-        response = Response { body: ResponseBody::Message(format!("Error - no author with id {}", author_id)) };
+        response = Response { data: ResponseBody::Error(format!("Error - no author with id {}", author_id)) };
         Err(NotFound(serde_json::to_string(&response).unwrap()))
     }
 }

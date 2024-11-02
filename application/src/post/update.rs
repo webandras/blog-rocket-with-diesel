@@ -30,7 +30,7 @@ pub fn update_post(state: &State<ServerState>, post_id: i32, post: Json<Post>) -
         },
         Err(err) => match err {
             diesel::result::Error::NotFound => {
-                let response = Response { body: ResponseBody::Message(format!("Error updating post with id {} - {}", post_id, err)) };
+                let response = Response { data: ResponseBody::Error(format!("Error updating post with id {} - {}", post_id, err)) };
                 return Err(NotFound(serde_json::to_string(&response).unwrap()));
             }
             _ => {

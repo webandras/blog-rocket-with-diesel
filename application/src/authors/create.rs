@@ -15,7 +15,7 @@ pub fn create_author(state: &State<ServerState>, author: Json<CreateAuthor>) -> 
 
     match diesel::insert_into(authors::table).values(&author).get_result::<Author>(&mut conn) {
         Ok(author) => {
-            let response = Response { body: ResponseBody::Author(author) };
+            let response = Response { data: ResponseBody::Author(author) };
             Created::new("").tagged_body(serde_json::to_string(&response).unwrap())
         }
         Err(err) => match err {
