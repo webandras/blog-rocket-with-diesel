@@ -5,6 +5,7 @@ use rocket::serde::Serialize;
 #[derive(Serialize)]
 pub enum ResponseBody {
     Message(String),
+    Error(String),
 
     #[serde(rename(serialize = "post"))]
     Post(Post),

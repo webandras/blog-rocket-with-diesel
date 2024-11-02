@@ -5,6 +5,7 @@ use api::cors::CORS;
 use api::post_handler;
 use api::authors_handler;
 use api::general_handler;
+use api::general_handler::{bad_gateway, default, forbidden, internal_server_error, not_found, too_many_redirects, unauthorized};
 use infrastructure::db_pool::*;
 
 #[launch]
@@ -32,6 +33,15 @@ fn rocket() -> _ {
             authors_handler::list_author_posts_handler
         ])
         .manage(ServerState { db_pool })
-        .register("/", catchers![rocket_validation::validation_catcher])
+        .register("/", catchers![
+            unauthorized,
+            forbidden,
+            not_found,
+            rocket_validation::validation_catcher,
+            too_many_redirects,
+            internal_server_error,
+            bad_gateway,
+            default
+        ])
 
 }
