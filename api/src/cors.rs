@@ -30,9 +30,14 @@ impl Fairing for CORS {
         response.set_header(Header::new("Access-Control-Allow-Credentials", "true"));
         */
 
-        // response.set_header(Header::new("Access-Control-Allow-Origin", "http://localhost:5173"));
-        response.set_header(Header::new("Access-Control-Allow-Origin", "https://rust-blog.webandras.hu"));
-        //response.set_header(Header::new("Access-Control-Allow-Methods", "POST, PATCH, PUT, DELETE, HEAD, OPTIONS, GET"));
+        let host = _request.host().unwrap();
+        if host.domain() == "127.0.0.1" {
+            response.set_header(Header::new("Access-Control-Allow-Origin", "http://localhost:5173"));
+        } else {
+            response.set_header(Header::new("Access-Control-Allow-Origin", "https://rust-blog.webandras.hu"));
+        }
+
+        // response.set_header(Header::new("Access-Control-Allow-Methods", "POST, PATCH, PUT, DELETE, HEAD, OPTIONS, GET"));
         // response.set_header(Header::new("Access-Control-Allow-Headers", "*"));
         response.set_header(Header::new("Access-Control-Allow-Credentials", "true"));
         response.set_header(Header::new("Vary", "Origin"));
